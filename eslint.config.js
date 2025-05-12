@@ -22,7 +22,7 @@ export default tseslint.config(
     settings: {
       "import/resolver": {
         typescript: {
-          project: "./tsconfig.json",
+          project: "./tsconfig.app.json",
         },
       },
     },
@@ -46,17 +46,12 @@ export default tseslint.config(
             "type",
           ],
           pathGroups: [
-            {
-              pattern: "@/**",
-              group: "internal",
-              position: "after",
-            },
+            { pattern: "virtual:*", group: "external", position: "before" },
+            { pattern: "@**", group: "internal", position: "before" },
+            { pattern: "**/*.css", group: "index", position: "after" },
           ],
           pathGroupsExcludedImportTypes: ["builtin"],
-          alphabetize: {
-            order: "asc",
-            caseInsensitive: true,
-          },
+          alphabetize: { order: "asc", caseInsensitive: true },
           "newlines-between": "always",
         },
       ],
