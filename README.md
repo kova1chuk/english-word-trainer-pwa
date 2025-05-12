@@ -1,54 +1,111 @@
-# React + TypeScript + Vite
+# 📘 English Word Trainer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**English Word Trainer** is a Progressive Web App (PWA) designed to help Ukrainian-speaking users build and retain English vocabulary effectively. Through interactive exercises, spaced repetition, and clean UI, it delivers a powerful learning experience on any device.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+* ✅ Interactive exercises for efficient word practice
+* ✅ Spaced repetition system for optimal memorization
+* ✅ Offline access via PWA support
+* ✅ Custom word lists and dictionary integration
+* ✅ Real-time progress tracking
+* ✅ Responsive UI optimized for mobile and desktop
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 🖥️ Tech Stack
+
+* **Frontend**: [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
+* **Bundler**: [Vite](https://vitejs.dev/)
+* **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+* **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/)
+* **Testing**: [Jest](https://jestjs.io/), [React Testing Library](https://testing-library.com/)
+* **Linting/Formatting**: ESLint, Prettier
+* **Git Hooks**: Husky, lint-staged
+* **CI/CD**: GitHub Actions
+
+---
+
+## 🛆 Installation
+
+```bash
+git clone https://github.com/yourusername/english-word-trainer.git
+cd english-word-trainer
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm run dev
 ```
+
+Application will be available at [http://localhost:5173](http://localhost:5173)
+
+---
+
+## 🧪 Available Scripts
+
+```bash
+npm run dev         # Start development server
+npm run build       # Create production build
+npm run preview     # Preview production build
+npm run lint        # Run ESLint checks
+npm run lint:fix    # Auto-fix linting issues
+npm run test        # Run tests
+```
+
+---
+
+## 🧰 Tooling & Git Hooks
+
+### ESLint & Prettier
+
+Ensures consistent style and code quality.
+
+```bash
+npm run lint
+npm run lint:fix
+```
+
+### Husky & lint-staged
+
+Pre-commit hooks to enforce standards on staged files.
+
+Enable Husky:
+
+```bash
+npm run prepare
+```
+
+Add pre-commit hook:
+
+```bash
+npx husky add .husky/pre-commit "npx lint-staged"
+```
+
+Then in `package.json`:
+
+```json
+"lint-staged": {
+  "*.{js,ts,jsx,tsx}": [
+    "eslint --fix",
+    "prettier --write"
+  ]
+}
+```
+
+---
+
+## 💡 Future Enhancements
+
+* 🔄 Word translation history
+* 🔎 AI-generated context sentences
+* 📊 Visualized learning stats
+* 🎧 Pronunciation practice
+
+---
+
+## 🗞️ License
+
+This project is licensed under the [MIT License](./LICENSE).
