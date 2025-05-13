@@ -6,8 +6,20 @@ export interface ThemeState {
   currentTheme: Theme;
 }
 
+const getInitialTheme = (): Theme => {
+  if (typeof window !== "undefined") {
+    const stored = localStorage.getItem("theme");
+    if (stored === "dark" || stored === "light") return stored;
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
+    return prefersDark ? "dark" : "light";
+  }
+  return "light";
+};
+
 const initialState: ThemeState = {
-  currentTheme: "light",
+  currentTheme: getInitialTheme(),
 };
 
 const themeSlice = createSlice({
@@ -16,9 +28,11 @@ const themeSlice = createSlice({
   reducers: {
     toggleTheme(state) {
       state.currentTheme = state.currentTheme === "light" ? "dark" : "light";
+      localStorage.setItem("theme", state.currentTheme); // ✅ persist
     },
     setTheme(state, action: PayloadAction<Theme>) {
       state.currentTheme = action.payload;
+      localStorage.setItem("theme", action.payload); // ✅ persist
     },
   },
 });

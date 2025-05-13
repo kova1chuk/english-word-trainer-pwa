@@ -1,17 +1,22 @@
 import { AppRouter } from "@/router/AppRouter";
 
-import ErrorBoundary from "./providers/ErrorBoundary";
-import RouterProvider from "./providers/RouterProvider";
-import StoreProvider from "./providers/StoreProvider";
+import {
+  StoreProvider,
+  ThemeProvider,
+  ErrorBoundary,
+  RouterProvider,
+} from "./providers";
 
 export default function App() {
   return (
     <StoreProvider>
-      <RouterProvider>
-        <ErrorBoundary>
-          <AppRouter />
-        </ErrorBoundary>
-      </RouterProvider>
+      <ThemeProvider>
+        <RouterProvider>
+          <ErrorBoundary>
+            <AppRouter />
+          </ErrorBoundary>
+        </RouterProvider>
+      </ThemeProvider>
     </StoreProvider>
   );
 }
