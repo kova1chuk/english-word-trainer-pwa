@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import LanguageSelector from "@/shared/i18n/ui/LanguageSelector";
 import ThemeToggle from "@/shared/theme/ui/ThemeToggle";
 
 const Header: React.FC = () => {
@@ -14,7 +15,7 @@ const Header: React.FC = () => {
       </Link>
       <div className="flex items-center gap-4">
         <ThemeToggle />
-        {/* <LanguageSelector /> */}
+        <LanguageSelector />
       </div>
     </header>
   );

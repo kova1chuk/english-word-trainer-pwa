@@ -1,0 +1,13 @@
+{
+  "title": "Word Trainer",
+  "toggle_theme": "Dark mode",
+  "login": "Login",
+  "home": {
+    "title": "Welcome to English Word Trainer",
+    "description": "Improve your English vocabulary efficiently and track your progress easily."
+  },
+  "not_found": {
+    "message": "Page not found",
+    "go_home": "Go Home"
+  }
+}
