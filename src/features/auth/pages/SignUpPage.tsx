@@ -1,5 +1,6 @@
 // TODO: SignUpPage
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -11,20 +12,43 @@ import Typography from "@/shared/ui/Typography";
 
 import { useSignupMutation } from "../store/authApi";
 
+interface SignUpFormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+const PASSWORD_MIN_LENGTH = 6;
+const PASSWORD_MAX_LENGTH = 50;
+
 const SignUpPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [signup, { isLoading }] = useSignupMutation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid, isDirty },
+  } = useForm<SignUpFormData>({
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    mode: "onChange",
+  });
+
+  const password = watch("password");
+
+  const onSubmit = async (data: SignUpFormData) => {
     setError("");
 
     try {
-      await signup({ email, password }).unwrap();
+      await signup({ email: data.email, password: data.password }).unwrap();
       navigate(routes.signin);
     } catch (error: unknown) {
       const errorMessage =
@@ -55,40 +79,99 @@ const SignUpPage = () => {
           </Typography>
         </div>
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form
+          className="space-y-6"
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+        >
           <div className="space-y-5">
             <FormField
               label={t("auth.signUp.emailLabel")}
               labelClassName="text-gray-700 dark:text-gray-300 font-medium"
+              error={errors.email?.message}
             >
               <Input
+                {...register("email", {
+                  required: t("validation.required", { field: "Email" }),
+                  pattern: {
+                    value: EMAIL_REGEX,
+                    message: t("validation.email"),
+                  },
+                  maxLength: {
+                    value: 100,
+                    message: t("validation.maxLength", { max: 100 }),
+                  },
+                  validate: {
+                    notEmpty: (value) =>
+                      value.trim().length > 0 || t("validation.notEmpty"),
+                  },
+                })}
                 id="email"
                 type="email"
-                required
                 disabled={isLoading}
                 placeholder={t("auth.signUp.emailPlaceholder")}
-                value={email}
                 className="bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEmail(e.target.value)
-                }
               />
             </FormField>
             <FormField
               label={t("auth.signUp.passwordLabel")}
               labelClassName="text-gray-700 dark:text-gray-300 font-medium"
+              error={errors.password?.message}
             >
               <Input
+                {...register("password", {
+                  required: t("validation.required", { field: "Password" }),
+                  minLength: {
+                    value: PASSWORD_MIN_LENGTH,
+                    message: t("validation.minLength", {
+                      min: PASSWORD_MIN_LENGTH,
+                    }),
+                  },
+                  maxLength: {
+                    value: PASSWORD_MAX_LENGTH,
+                    message: t("validation.maxLength", {
+                      max: PASSWORD_MAX_LENGTH,
+                    }),
+                  },
+                  validate: {
+                    notEmpty: (value) =>
+                      value.trim().length > 0 || t("validation.notEmpty"),
+                    hasUpperCase: (value) =>
+                      /[A-Z]/.test(value) || t("validation.password.uppercase"),
+                    hasLowerCase: (value) =>
+                      /[a-z]/.test(value) || t("validation.password.lowercase"),
+                    hasNumber: (value) =>
+                      /\d/.test(value) || t("validation.password.number"),
+                    hasSpecialChar: (value) =>
+                      /[!@#$%^&*(),.?":{}|<>]/.test(value) ||
+                      t("validation.password.special"),
+                  },
+                })}
                 id="password"
                 type="password"
-                required
                 disabled={isLoading}
                 placeholder={t("auth.signUp.passwordPlaceholder")}
-                value={password}
                 className="bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setPassword(e.target.value)
-                }
+              />
+            </FormField>
+            <FormField
+              label={t("auth.signUp.confirmPasswordLabel")}
+              labelClassName="text-gray-700 dark:text-gray-300 font-medium"
+              error={errors.confirmPassword?.message}
+            >
+              <Input
+                {...register("confirmPassword", {
+                  required: t("validation.required", {
+                    field: "Password confirmation",
+                  }),
+                  validate: (value) =>
+                    value === password || t("validation.password.match"),
+                })}
+                id="confirmPassword"
+                type="password"
+                disabled={isLoading}
+                placeholder={t("auth.signUp.confirmPasswordPlaceholder")}
+                className="bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
               />
             </FormField>
           </div>
@@ -107,7 +190,7 @@ const SignUpPage = () => {
           <Button
             type="submit"
             color="primary"
-            disabled={isLoading}
+            disabled={isLoading || !isValid || !isDirty}
             loading={isLoading}
             className="w-full py-3 text-lg rounded-xl font-medium"
           >

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -10,20 +11,38 @@ import Typography from "@/shared/ui/Typography";
 
 import { useSigninMutation } from "../store/authApi";
 
+interface SignInFormData {
+  email: string;
+  password: string;
+}
+
+const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+const PASSWORD_MIN_LENGTH = 6;
+const PASSWORD_MAX_LENGTH = 50;
+
 const SignInPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [signin, { isLoading }] = useSigninMutation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid, isDirty },
+  } = useForm<SignInFormData>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    mode: "onChange",
+  });
+
+  const onSubmit = async (data: SignInFormData) => {
     setError("");
 
     try {
-      await signin({ username: email, password }).unwrap();
+      await signin({ username: data.email, password: data.password }).unwrap();
       navigate(routes.home);
     } catch (error: unknown) {
       const errorMessage =
@@ -54,40 +73,76 @@ const SignInPage = () => {
           </Typography>
         </div>
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form
+          className="space-y-6"
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+        >
           <div className="space-y-5">
             <FormField
               label={t("auth.signIn.emailLabel")}
               labelClassName="text-gray-700 dark:text-gray-300 font-medium"
+              error={errors.email?.message}
             >
               <Input
+                {...register("email", {
+                  required: t("validation.required", { field: "Email" }),
+                  pattern: {
+                    value: EMAIL_REGEX,
+                    message: t("validation.email"),
+                  },
+                  maxLength: {
+                    value: 100,
+                    message: t("validation.maxLength", { max: 100 }),
+                  },
+                  validate: {
+                    notEmpty: (value) =>
+                      value.trim().length > 0 || t("validation.notEmpty"),
+                  },
+                })}
                 id="email"
                 type="email"
-                required
                 disabled={isLoading}
                 placeholder={t("auth.signIn.emailPlaceholder")}
-                value={email}
                 className="bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEmail(e.target.value)
-                }
               />
             </FormField>
             <FormField
               label={t("auth.signIn.passwordLabel")}
               labelClassName="text-gray-700 dark:text-gray-300 font-medium"
+              error={errors.password?.message}
             >
               <Input
+                {...register("password", {
+                  required: t("validation.required", { field: "Password" }),
+                  minLength: {
+                    value: PASSWORD_MIN_LENGTH,
+                    message: t("validation.minLength", {
+                      min: PASSWORD_MIN_LENGTH,
+                    }),
+                  },
+                  maxLength: {
+                    value: PASSWORD_MAX_LENGTH,
+                    message: t("validation.maxLength", {
+                      max: PASSWORD_MAX_LENGTH,
+                    }),
+                  },
+                  validate: {
+                    notEmpty: (value) =>
+                      value.trim().length > 0 || t("validation.notEmpty"),
+                    hasUpperCase: (value) =>
+                      /[A-Z]/.test(value) || t("validation.password.uppercase"),
+                    hasLowerCase: (value) =>
+                      /[a-z]/.test(value) || t("validation.password.lowercase"),
+                    hasNumber: (value) =>
+                      /\d/.test(value) || t("validation.password.number"),
+                  },
+                })}
                 id="password"
                 type="password"
-                required
                 disabled={isLoading}
                 placeholder={t("auth.signIn.passwordPlaceholder")}
-                value={password}
                 className="bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setPassword(e.target.value)
-                }
               />
             </FormField>
           </div>
@@ -106,7 +161,7 @@ const SignInPage = () => {
           <Button
             type="submit"
             color="primary"
-            disabled={isLoading}
+            disabled={isLoading || !isValid || !isDirty}
             loading={isLoading}
             className="w-full py-3 text-lg rounded-xl font-medium"
           >
