@@ -4,11 +4,17 @@ interface FormFieldProps {
   label: string;
   error?: string;
   children: ReactNode;
+  labelClassName?: string;
 }
 
-const FormField: React.FC<FormFieldProps> = ({ label, error, children }) => (
+const FormField: React.FC<FormFieldProps> = ({
+  label,
+  error,
+  children,
+  labelClassName = "text-gray-700 dark:text-gray-300",
+}) => (
   <div className="mb-4">
-    <label className="block mb-1 text-gray-700 dark:text-gray-300 font-medium">
+    <label className={`block mb-1 font-medium ${labelClassName}`}>
       {label}
     </label>
     {children}

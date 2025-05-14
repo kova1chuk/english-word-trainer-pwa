@@ -1,0 +1,53 @@
+{
+  "auth": {
+    "signIn": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to continue learning",
+      "emailLabel": "Email",
+      "emailPlaceholder": "your@email.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "button": "Sign In",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign Up",
+      "error": "Failed to sign in"
+    },
+    "signUp": {
+      "title": "Create Account",
+      "subtitle": "Start your language learning journey",
+      "emailLabel": "Email",
+      "emailPlaceholder": "your@email.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "button": "Create Account",
+      "haveAccount": "Already have an account?",
+      "signInLink": "Sign In",
+      "error": "Failed to create account"
+    }
+  },
+  "home": {
+    "title": "Word Trainer",
+    "description": "Learn English words effectively"
+  },
+  "not_found": {
+    "message": "Page not found",
+    "go_home": "Go to Home"
+  },
+  "header": {
+    "sign_out": "Sign Out",
+    "sign_in": "Sign In",
+    "sign_up": "Sign Up",
+    "app_name": "Word Trainer"
+  },
+  "common": {
+    "theme": {
+      "toggle": "Toggle theme",
+      "light": "Light mode",
+      "dark": "Dark mode"
+    },
+    "language": {
+      "en": "English",
+      "uk": "Ukrainian"
+    }
+  }
+}

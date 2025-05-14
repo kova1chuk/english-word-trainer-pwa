@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
 import { clearToken } from "@/features/auth/store/slice";
@@ -14,6 +15,7 @@ const Header: React.FC = () => {
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.auth.token);
   const theme = useAppSelector((state) => state.theme.currentTheme);
+  const { t } = useTranslation();
 
   const handleSignOut = () => {
     dispatch(clearToken());
@@ -28,7 +30,7 @@ const Header: React.FC = () => {
           weight="bold"
           color={theme === "dark" ? "accent" : "primary"}
         >
-          Word Trainer
+          {t("header.app_name")}
         </Typography>
       </Link>
       <div className="flex items-center gap-4">
@@ -36,7 +38,7 @@ const Header: React.FC = () => {
         <LanguageSelector />
         {token ? (
           <Button color="ghost" size="sm" onClick={handleSignOut}>
-            Sign Out
+            {t("header.sign_out")}
           </Button>
         ) : (
           <div className="flex gap-2">
@@ -45,14 +47,14 @@ const Header: React.FC = () => {
               size="sm"
               onClick={() => navigate(routes.signin)}
             >
-              Sign In
+              {t("header.sign_in")}
             </Button>
             <Button
               color="accent"
               size="sm"
               onClick={() => navigate(routes.signup)}
             >
-              Sign Up
+              {t("header.sign_up")}
             </Button>
           </div>
         )}

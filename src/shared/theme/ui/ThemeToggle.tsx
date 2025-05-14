@@ -16,12 +16,13 @@ const ThemeToggle: React.FC = () => {
     dispatch(setTheme(newTheme));
   };
 
+  const isDark = currentTheme === "dark";
+  const label = isDark ? t("common.theme.dark") : t("common.theme.light");
+
   return (
-    <Switch
-      checked={currentTheme === "dark"}
-      onChange={handleToggle}
-      label={currentTheme === "dark" ? t("toggle_theme") : t("toggle_theme")}
-    />
+    <div className="flex items-center gap-2">
+      <Switch checked={isDark} onChange={handleToggle} label={label} />
+    </div>
   );
 };
 

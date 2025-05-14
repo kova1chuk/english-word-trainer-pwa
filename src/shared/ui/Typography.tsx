@@ -7,6 +7,7 @@ export type TypographyKind = {
     | "accent"
     | "warning"
     | "success"
+    | "error"
     | "highlight"
     | "default";
   size?: "sm" | "md" | "lg" | "xl";
@@ -28,13 +29,14 @@ const Typography: React.FC<TypographyProps> = ({
   className = "",
 }) => {
   const colorClass = {
-    default: "text-gray-900 dark:text-gray-100",
-    primary: "text-primary dark:text-primary-light",
-    secondary: "text-gray-600 dark:text-gray-400",
-    accent: "text-accent dark:text-accent-light",
-    warning: "text-warning dark:text-warning-light",
-    success: "text-success dark:text-success-light",
-    highlight: "text-highlight dark:text-highlight-light",
+    default: "text-text-primary-light dark:text-text-primary-dark",
+    primary: "text-primary-DEFAULT dark:text-primary-light",
+    secondary: "text-text-secondary-light dark:text-text-secondary-dark",
+    accent: "text-text-accent-light dark:text-text-accent-dark",
+    warning: "text-warning-DEFAULT dark:text-warning-light",
+    success: "text-success-DEFAULT dark:text-success-light",
+    error: "text-error-DEFAULT dark:text-error-light",
+    highlight: "text-primary-light dark:text-primary-DEFAULT",
   }[color];
 
   const sizeClass = {
