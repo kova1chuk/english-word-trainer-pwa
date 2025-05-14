@@ -148,14 +148,16 @@ const SignInPage = () => {
           </div>
 
           {error && (
-            <Typography
-              color="error"
-              size="sm"
-              align="center"
-              className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-2 rounded-lg"
-            >
-              {error}
-            </Typography>
+            <div className="absolute left-0 right-0 bottom-[120px] px-4">
+              <Typography
+                color="error"
+                size="sm"
+                align="center"
+                className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-2 rounded-lg shadow-lg"
+              >
+                {error}
+              </Typography>
+            </div>
           )}
 
           <Button
