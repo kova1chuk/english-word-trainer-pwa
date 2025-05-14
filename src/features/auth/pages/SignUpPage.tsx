@@ -1,4 +1,5 @@
 // TODO: SignUpPage
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -11,16 +12,9 @@ import Input from "@/shared/ui/Input";
 import Typography from "@/shared/ui/Typography";
 
 import { useSignupMutation } from "../store/authApi";
+import { signUpSchema } from "../validation/auth.schema";
 
-interface SignUpFormData {
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-const PASSWORD_MIN_LENGTH = 6;
-const PASSWORD_MAX_LENGTH = 50;
+import type { SignUpFormData } from "../validation/auth.schema";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -31,7 +25,6 @@ const SignUpPage = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isValid, isDirty },
   } = useForm<SignUpFormData>({
     defaultValues: {
@@ -39,10 +32,9 @@ const SignUpPage = () => {
       password: "",
       confirmPassword: "",
     },
+    resolver: zodResolver(signUpSchema),
     mode: "onChange",
   });
-
-  const password = watch("password");
 
   const onSubmit = async (data: SignUpFormData) => {
     setError("");
@@ -88,24 +80,13 @@ const SignUpPage = () => {
             <FormField
               label={t("auth.signUp.emailLabel")}
               labelClassName="text-gray-700 dark:text-gray-300 font-medium"
-              error={errors.email?.message}
+              error={
+                errors.email?.message ? t(errors.email.message) : undefined
+              }
+              required
             >
               <Input
-                {...register("email", {
-                  required: t("validation.required", { field: "Email" }),
-                  pattern: {
-                    value: EMAIL_REGEX,
-                    message: t("validation.email"),
-                  },
-                  maxLength: {
-                    value: 100,
-                    message: t("validation.maxLength", { max: 100 }),
-                  },
-                  validate: {
-                    notEmpty: (value) =>
-                      value.trim().length > 0 || t("validation.notEmpty"),
-                  },
-                })}
+                {...register("email")}
                 id="email"
                 type="email"
                 disabled={isLoading}
@@ -116,37 +97,15 @@ const SignUpPage = () => {
             <FormField
               label={t("auth.signUp.passwordLabel")}
               labelClassName="text-gray-700 dark:text-gray-300 font-medium"
-              error={errors.password?.message}
+              error={
+                errors.password?.message
+                  ? t(errors.password.message)
+                  : undefined
+              }
+              required
             >
               <Input
-                {...register("password", {
-                  required: t("validation.required", { field: "Password" }),
-                  minLength: {
-                    value: PASSWORD_MIN_LENGTH,
-                    message: t("validation.minLength", {
-                      min: PASSWORD_MIN_LENGTH,
-                    }),
-                  },
-                  maxLength: {
-                    value: PASSWORD_MAX_LENGTH,
-                    message: t("validation.maxLength", {
-                      max: PASSWORD_MAX_LENGTH,
-                    }),
-                  },
-                  validate: {
-                    notEmpty: (value) =>
-                      value.trim().length > 0 || t("validation.notEmpty"),
-                    hasUpperCase: (value) =>
-                      /[A-Z]/.test(value) || t("validation.password.uppercase"),
-                    hasLowerCase: (value) =>
-                      /[a-z]/.test(value) || t("validation.password.lowercase"),
-                    hasNumber: (value) =>
-                      /\d/.test(value) || t("validation.password.number"),
-                    hasSpecialChar: (value) =>
-                      /[!@#$%^&*(),.?":{}|<>]/.test(value) ||
-                      t("validation.password.special"),
-                  },
-                })}
+                {...register("password")}
                 id="password"
                 type="password"
                 disabled={isLoading}
@@ -157,16 +116,15 @@ const SignUpPage = () => {
             <FormField
               label={t("auth.signUp.confirmPasswordLabel")}
               labelClassName="text-gray-700 dark:text-gray-300 font-medium"
-              error={errors.confirmPassword?.message}
+              error={
+                errors.confirmPassword?.message
+                  ? t(errors.confirmPassword.message)
+                  : undefined
+              }
+              required
             >
               <Input
-                {...register("confirmPassword", {
-                  required: t("validation.required", {
-                    field: "Password confirmation",
-                  }),
-                  validate: (value) =>
-                    value === password || t("validation.password.match"),
-                })}
+                {...register("confirmPassword")}
                 id="confirmPassword"
                 type="password"
                 disabled={isLoading}
@@ -177,7 +135,7 @@ const SignUpPage = () => {
           </div>
 
           {error && (
-            <div className="absolute left-0 right-0 bottom-[120px] px-4">
+            <div className="px-4">
               <Typography
                 color="error"
                 size="sm"

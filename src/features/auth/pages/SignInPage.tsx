@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -10,15 +11,9 @@ import Input from "@/shared/ui/Input";
 import Typography from "@/shared/ui/Typography";
 
 import { useSigninMutation } from "../store/authApi";
+import { signInSchema } from "../validation/auth.schema";
 
-interface SignInFormData {
-  email: string;
-  password: string;
-}
-
-const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-const PASSWORD_MIN_LENGTH = 6;
-const PASSWORD_MAX_LENGTH = 50;
+import type { SignInFormData } from "../validation/auth.schema";
 
 const SignInPage = () => {
   const navigate = useNavigate();
@@ -35,6 +30,7 @@ const SignInPage = () => {
       email: "",
       password: "",
     },
+    resolver: zodResolver(signInSchema),
     mode: "onChange",
   });
 
@@ -82,24 +78,13 @@ const SignInPage = () => {
             <FormField
               label={t("auth.signIn.emailLabel")}
               labelClassName="text-gray-700 dark:text-gray-300 font-medium"
-              error={errors.email?.message}
+              error={
+                errors.email?.message ? t(errors.email.message) : undefined
+              }
+              required
             >
               <Input
-                {...register("email", {
-                  required: t("validation.required", { field: "Email" }),
-                  pattern: {
-                    value: EMAIL_REGEX,
-                    message: t("validation.email"),
-                  },
-                  maxLength: {
-                    value: 100,
-                    message: t("validation.maxLength", { max: 100 }),
-                  },
-                  validate: {
-                    notEmpty: (value) =>
-                      value.trim().length > 0 || t("validation.notEmpty"),
-                  },
-                })}
+                {...register("email")}
                 id="email"
                 type="email"
                 disabled={isLoading}
@@ -110,34 +95,15 @@ const SignInPage = () => {
             <FormField
               label={t("auth.signIn.passwordLabel")}
               labelClassName="text-gray-700 dark:text-gray-300 font-medium"
-              error={errors.password?.message}
+              error={
+                errors.password?.message
+                  ? t(errors.password.message)
+                  : undefined
+              }
+              required
             >
               <Input
-                {...register("password", {
-                  required: t("validation.required", { field: "Password" }),
-                  minLength: {
-                    value: PASSWORD_MIN_LENGTH,
-                    message: t("validation.minLength", {
-                      min: PASSWORD_MIN_LENGTH,
-                    }),
-                  },
-                  maxLength: {
-                    value: PASSWORD_MAX_LENGTH,
-                    message: t("validation.maxLength", {
-                      max: PASSWORD_MAX_LENGTH,
-                    }),
-                  },
-                  validate: {
-                    notEmpty: (value) =>
-                      value.trim().length > 0 || t("validation.notEmpty"),
-                    hasUpperCase: (value) =>
-                      /[A-Z]/.test(value) || t("validation.password.uppercase"),
-                    hasLowerCase: (value) =>
-                      /[a-z]/.test(value) || t("validation.password.lowercase"),
-                    hasNumber: (value) =>
-                      /\d/.test(value) || t("validation.password.number"),
-                  },
-                })}
+                {...register("password")}
                 id="password"
                 type="password"
                 disabled={isLoading}
@@ -148,7 +114,7 @@ const SignInPage = () => {
           </div>
 
           {error && (
-            <div className="absolute left-0 right-0 bottom-[120px] px-4">
+            <div className="px-4">
               <Typography
                 color="error"
                 size="sm"
