@@ -2,34 +2,53 @@ import { api } from "@/shared/config/store/api";
 
 import { setToken } from "./slice";
 
+import type { SignInFormData, SignUpFormData } from "../validation/auth.schema";
+
+interface AuthResponse {
+  id: string;
+  email: string;
+}
+
+interface SignInResponse {
+  access_token: string;
+}
+
+interface ErrorResponse {
+  message: string;
+  statusCode: number;
+}
+
 const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    signup: builder.mutation<
-      { id: string; email: string },
-      { email: string; password: string }
-    >({
-      query: (body) => ({
+    signup: builder.mutation<AuthResponse, SignUpFormData>({
+      query: ({ email, password }) => ({
         url: "/auth/signup",
         method: "POST",
-        body,
+        body: { email, password },
         headers: {
           "Content-Type": "application/json",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
       }),
+      transformErrorResponse: (response): ErrorResponse =>
+        response.data as ErrorResponse,
       invalidatesTags: ["Auth"],
     }),
     signin: builder.mutation<
-      { access_token: string },
-      { username: string; password: string }
+      SignInResponse,
+      Omit<SignInFormData, "confirmPassword">
     >({
-      query: (body) => ({
+      query: ({ email, password }) => ({
         url: "/auth/signin",
         method: "POST",
-        body: new URLSearchParams(body),
+        body: new URLSearchParams({ username: email, password }),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
       }),
+      transformErrorResponse: (response): ErrorResponse =>
+        response.data as ErrorResponse,
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
