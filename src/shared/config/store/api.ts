@@ -17,20 +17,11 @@ export const api = createApi({
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
 
-      headers.set("Content-Type", "application/json");
-      headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
 
       return headers;
-    },
-    fetchFn: async (input, init) => {
-      const config = init || {};
-
-      config.referrerPolicy = "strict-origin-when-cross-origin";
-
-      return fetch(input, config);
     },
   }),
   tagTypes: ["Auth", "Words", "User"],

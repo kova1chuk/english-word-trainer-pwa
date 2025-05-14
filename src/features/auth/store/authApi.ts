@@ -27,8 +27,8 @@ const authApi = api.injectEndpoints({
         body: { email, password },
         headers: {
           "Content-Type": "application/json",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
+        referrerPolicy: "strict-origin-when-cross-origin",
       }),
       transformErrorResponse: (response): ErrorResponse =>
         response.data as ErrorResponse,
@@ -44,8 +44,8 @@ const authApi = api.injectEndpoints({
         body: new URLSearchParams({ username: email, password }),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
+        referrerPolicy: "strict-origin-when-cross-origin",
       }),
       transformErrorResponse: (response): ErrorResponse =>
         response.data as ErrorResponse,
