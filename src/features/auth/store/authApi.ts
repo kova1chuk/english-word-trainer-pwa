@@ -12,6 +12,9 @@ const authApi = api.injectEndpoints({
         url: "/auth/signup",
         method: "POST",
         body,
+        headers: {
+          "Content-Type": "application/json",
+        },
       }),
       invalidatesTags: ["Auth"],
     }),
