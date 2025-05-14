@@ -29,14 +29,14 @@ const Typography: React.FC<TypographyProps> = ({
   className = "",
 }) => {
   const colorClass = {
-    default: "text-text-primary-light dark:text-text-primary-dark",
-    primary: "text-primary-DEFAULT dark:text-primary-light",
-    secondary: "text-text-secondary-light dark:text-text-secondary-dark",
-    accent: "text-text-accent-light dark:text-text-accent-dark",
-    warning: "text-warning-DEFAULT dark:text-warning-light",
-    success: "text-success-DEFAULT dark:text-success-light",
-    error: "text-error-DEFAULT dark:text-error-light",
-    highlight: "text-primary-light dark:text-primary-DEFAULT",
+    default: "text-gray-900 dark:text-white",
+    primary: "text-blue-600 dark:text-blue-400",
+    secondary: "text-gray-600 dark:text-gray-300",
+    accent: "text-purple-600 dark:text-purple-400",
+    warning: "text-yellow-600 dark:text-yellow-400",
+    success: "text-green-600 dark:text-green-400",
+    error: "text-red-600 dark:text-red-400",
+    highlight: "text-blue-500 dark:text-blue-400",
   }[color];
 
   const sizeClass = {

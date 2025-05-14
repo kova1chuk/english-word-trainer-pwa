@@ -10,12 +10,16 @@ const NotFoundPage: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-background-light dark:bg-background-dark">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50 dark:bg-gray-900">
       <div className="text-center space-y-6">
-        <Typography size="xl" weight="bold" className="text-6xl">
+        <Typography
+          size="xl"
+          weight="bold"
+          className="text-6xl text-gray-900 dark:text-white"
+        >
           404
         </Typography>
-        <Typography size="lg" color="secondary">
+        <Typography size="lg" className="text-gray-600 dark:text-gray-300">
           {t("not_found.message")}
         </Typography>
         <Button color="primary" onClick={() => navigate("/")}>

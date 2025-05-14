@@ -19,9 +19,7 @@ const FormField: React.FC<FormFieldProps> = ({
     </label>
     {children}
     {error && (
-      <p className="mt-1 text-sm text-warning dark:text-warning-light">
-        {error}
-      </p>
+      <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>
     )}
   </div>
 );

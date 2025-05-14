@@ -14,7 +14,6 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.auth.token);
-  const theme = useAppSelector((state) => state.theme.currentTheme);
   const { t } = useTranslation();
 
   const handleSignOut = () => {
@@ -28,7 +27,7 @@ const Header: React.FC = () => {
         <Typography
           size="lg"
           weight="bold"
-          color={theme === "dark" ? "accent" : "primary"}
+          className="text-blue-600 dark:text-white"
         >
           {t("header.app_name")}
         </Typography>
@@ -50,7 +49,7 @@ const Header: React.FC = () => {
               {t("header.sign_in")}
             </Button>
             <Button
-              color="accent"
+              color="primary"
               size="sm"
               onClick={() => navigate(routes.signup)}
             >

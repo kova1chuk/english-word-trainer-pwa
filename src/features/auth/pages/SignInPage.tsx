@@ -13,7 +13,7 @@ import { useSigninMutation } from "../store/authApi";
 const SignInPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [signin] = useSigninMutation();
+  const [signin, { isLoading }] = useSigninMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -35,20 +35,20 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center p-4 bg-background-light dark:bg-background-dark min-h-screen">
-      <div className="w-full max-w-[440px] space-y-8 p-10 bg-white dark:bg-background-darker rounded-2xl shadow-lg dark:shadow-2xl border border-border-light dark:border-border-dark">
+    <div className="flex-1 flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <div className="w-full max-w-[440px] space-y-8 p-10 bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-2xl border border-gray-200 dark:border-gray-700">
         <div className="space-y-3">
           <Typography
             size="xl"
             weight="bold"
             align="center"
-            className="text-text-primary-light dark:text-text-primary-dark text-[28px]"
+            className="text-gray-900 dark:text-white text-[28px]"
           >
             {t("auth.signIn.title")}
           </Typography>
           <Typography
             align="center"
-            className="text-text-secondary-light dark:text-text-secondary-dark"
+            className="text-gray-600 dark:text-gray-300"
           >
             {t("auth.signIn.subtitle")}
           </Typography>
@@ -58,15 +58,16 @@ const SignInPage = () => {
           <div className="space-y-5">
             <FormField
               label={t("auth.signIn.emailLabel")}
-              labelClassName="text-text-secondary-light dark:text-text-secondary-dark font-medium"
+              labelClassName="text-gray-700 dark:text-gray-300 font-medium"
             >
               <Input
                 id="email"
                 type="email"
                 required
+                disabled={isLoading}
                 placeholder={t("auth.signIn.emailPlaceholder")}
                 value={email}
-                className="bg-background-light dark:bg-background-darker border-border-light dark:border-border-dark text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark"
+                className="bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setEmail(e.target.value)
                 }
@@ -74,15 +75,16 @@ const SignInPage = () => {
             </FormField>
             <FormField
               label={t("auth.signIn.passwordLabel")}
-              labelClassName="text-text-secondary-light dark:text-text-secondary-dark font-medium"
+              labelClassName="text-gray-700 dark:text-gray-300 font-medium"
             >
               <Input
                 id="password"
                 type="password"
                 required
+                disabled={isLoading}
                 placeholder={t("auth.signIn.passwordPlaceholder")}
                 value={password}
-                className="bg-background-light dark:bg-background-darker border-border-light dark:border-border-dark text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark"
+                className="bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setPassword(e.target.value)
                 }
@@ -95,26 +97,29 @@ const SignInPage = () => {
               color="error"
               size="sm"
               align="center"
-              className="bg-error-light/10 dark:bg-error-dark/10 p-2 rounded-lg"
+              className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-2 rounded-lg"
             >
               {error}
             </Typography>
           )}
 
           <Button
+            type="submit"
             color="primary"
-            className="w-full py-3 text-lg rounded-xl font-medium hover:opacity-90 transition-opacity"
+            disabled={isLoading}
+            loading={isLoading}
+            className="w-full py-3 text-lg rounded-xl font-medium"
           >
             {t("auth.signIn.button")}
           </Button>
         </form>
 
         <div className="text-center">
-          <Typography className="text-text-secondary-light dark:text-text-secondary-dark">
+          <Typography className="text-gray-600 dark:text-gray-300">
             {t("auth.signIn.noAccount")}{" "}
             <Link
               to={routes.signup}
-              className="text-primary-light dark:text-primary-dark hover:opacity-80 transition-opacity font-medium"
+              className="text-blue-600 dark:text-blue-400 hover:opacity-80 transition-opacity font-medium"
             >
               {t("auth.signIn.signUpLink")}
             </Link>
