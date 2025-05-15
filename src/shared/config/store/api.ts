@@ -2,8 +2,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 import type { RootState } from ".";
 
-const API_URL =
-  "http://word-trainer-alb-200052989.eu-central-1.elb.amazonaws.com";
+// Backend URL should match one of the allowed CORS origins
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5173";
 
 export interface ApiError {
   message: string;
@@ -23,6 +23,7 @@ export const api = createApi({
 
       return headers;
     },
+    credentials: "include", // This enables sending cookies in CORS requests
   }),
   tagTypes: ["Auth", "Words", "User"],
   endpoints: () => ({}),
