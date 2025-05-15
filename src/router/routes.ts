@@ -1,6 +1,20 @@
 export const routes = {
+  // Public routes
+  signin: "/signin",
+  signup: "/signup",
+
+  // Main routes
   home: "/",
-  signin: "/auth/signin",
-  signup: "/auth/signup",
+  dictionary: "/dictionary",
+  dictionaryEntry: "/dictionary/:id",
+  words: "/words",
+  practice: "/practice",
+  statistics: "/statistics",
+
+  // Profile routes
+  profileSetup: "/profile/setup",
+  profileSettings: "/profile/settings",
+
+  // System routes
   notFound: "*",
-};
+} as const;

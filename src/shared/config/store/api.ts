@@ -24,6 +24,6 @@ export const api = createApi({
     },
     credentials: "include", // This enables sending cookies in CORS requests
   }),
-  tagTypes: ["Auth", "Words", "User"],
+  tagTypes: ["Auth", "Profile", "Dictionary", "Words"],
   endpoints: () => ({}),
 });

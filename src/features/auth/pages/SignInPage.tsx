@@ -50,21 +50,13 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
-      <div className="w-full max-w-[440px] space-y-8 p-10 bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-2xl border border-gray-200 dark:border-gray-700">
+    <div className="flex min-h-screen flex-1 items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
+      <div className="w-full max-w-[440px] space-y-8 rounded-2xl border border-gray-200 bg-white p-10 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:shadow-2xl">
         <div className="space-y-3">
-          <Typography
-            size="xl"
-            weight="bold"
-            align="center"
-            className="text-gray-900 dark:text-white text-[28px]"
-          >
+          <Typography variant="h2" align="center">
             {t("auth.signIn.title")}
           </Typography>
-          <Typography
-            align="center"
-            className="text-gray-600 dark:text-gray-300"
-          >
+          <Typography variant="body1" color="secondary" align="center">
             {t("auth.signIn.subtitle")}
           </Typography>
         </div>
@@ -89,7 +81,7 @@ const SignInPage = () => {
                 type="email"
                 disabled={isLoading}
                 placeholder={t("auth.signIn.emailPlaceholder")}
-                className="bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+                className="border-gray-300 bg-gray-50 text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:focus:ring-blue-400"
               />
             </FormField>
             <FormField
@@ -108,7 +100,7 @@ const SignInPage = () => {
                 type="password"
                 disabled={isLoading}
                 placeholder={t("auth.signIn.passwordPlaceholder")}
-                className="bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+                className="border-gray-300 bg-gray-50 text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:focus:ring-blue-400"
               />
             </FormField>
           </div>
@@ -116,10 +108,10 @@ const SignInPage = () => {
           {error && (
             <div className="px-4">
               <Typography
+                variant="body2"
                 color="error"
-                size="sm"
                 align="center"
-                className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-2 rounded-lg shadow-lg"
+                className="rounded-lg bg-red-50 p-2 shadow-lg dark:bg-red-900/20"
               >
                 {error}
               </Typography>
@@ -129,22 +121,22 @@ const SignInPage = () => {
           <Button
             type="submit"
             color="primary"
-            disabled={isLoading || !isValid || !isDirty}
+            className="w-full"
             loading={isLoading}
-            className="w-full py-3 text-lg rounded-xl font-medium"
+            disabled={isLoading || !isValid || !isDirty}
           >
-            {t("auth.signIn.button")}
+            {t("auth.signIn.submit")}
           </Button>
         </form>
 
         <div className="text-center">
-          <Typography className="text-gray-600 dark:text-gray-300">
+          <Typography variant="body2" color="secondary">
             {t("auth.signIn.noAccount")}{" "}
             <Link
               to={routes.signup}
-              className="text-blue-600 dark:text-blue-400 hover:opacity-80 transition-opacity font-medium"
+              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
-              {t("auth.signIn.signUpLink")}
+              {t("auth.signIn.createAccount")}
             </Link>
           </Typography>
         </div>

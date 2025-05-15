@@ -8,7 +8,7 @@ const LanguageSelector = () => {
   return (
     <Select
       value={i18n.language}
-      onChange={(lang) => i18n.changeLanguage(lang)}
+      onChange={(e) => i18n.changeLanguage(e.target.value)}
       options={[
         { value: "en", label: "English" },
         { value: "uk", label: "Українська" },

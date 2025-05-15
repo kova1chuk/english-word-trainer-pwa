@@ -7,10 +7,10 @@
       "emailPlaceholder": "your@email.com",
       "passwordLabel": "Password",
       "passwordPlaceholder": "••••••••",
-      "button": "Sign In",
+      "submit": "Sign In",
       "noAccount": "Don't have an account?",
-      "signUpLink": "Sign Up",
-      "error": "Failed to sign in"
+      "createAccount": "Create Account",
+      "error": "Invalid email or password"
     },
     "signUp": {
       "title": "Create Account",
@@ -21,9 +21,9 @@
       "passwordPlaceholder": "••••••••",
       "confirmPasswordLabel": "Confirm Password",
       "confirmPasswordPlaceholder": "••••••••",
-      "button": "Create Account",
+      "submit": "Create Account",
       "haveAccount": "Already have an account?",
-      "signInLink": "Sign In",
+      "signIn": "Sign In",
       "error": "Failed to create account"
     }
   },
@@ -38,7 +38,17 @@
       "lowercase": "Must contain at least one lowercase letter",
       "number": "Must contain at least one number",
       "special": "Must contain at least one special character",
-      "match": "Passwords must match"
+      "match": "Passwords must match",
+      "min": "Password must be at least {{min}} characters",
+      "max": "Password must not exceed {{max}} characters"
+    },
+    "field": {
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "nativeLanguage": "Native Language",
+      "targetLanguage": "Target Language"
     }
   },
   "home": {
@@ -53,9 +63,24 @@
     "sign_out": "Sign Out",
     "sign_in": "Sign In",
     "sign_up": "Sign Up",
-    "app_name": "Word Trainer"
+    "app_name": "Word Trainer",
+    "dictionary": "Dictionary",
+    "my_words": "My Words",
+    "practice": "Practice",
+    "stats": "Statistics",
+    "profile": "Profile"
   },
   "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "noResults": "No results found",
     "theme": {
       "toggle": "Toggle theme",
       "light": "Light mode",
@@ -65,5 +90,112 @@
       "en": "English",
       "uk": "Ukrainian"
     }
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you are looking for does not exist.",
+    "backHome": "Back to Home"
+  },
+  "dictionary": {
+    "browser": {
+      "title": "Dictionary Browser",
+      "description": "Search and explore words in our comprehensive dictionary",
+      "searchPlaceholder": "Search for words...",
+      "filterByPartOfSpeech": "Filter by part of speech",
+      "noResults": "No dictionary entries found"
+    },
+    "entry": {
+      "title": "Dictionary Entry",
+      "examples": "Examples",
+      "synonyms": "Synonyms",
+      "antonyms": "Antonyms",
+      "addToMyWords": "Add to My Words",
+      "pronunciation": "Pronunciation",
+      "partOfSpeech": "Part of Speech",
+      "definitions": "Definitions"
+    }
+  },
+  "words": {
+    "list": {
+      "title": "My Words",
+      "description": "Manage your personal word collection",
+      "searchPlaceholder": "Search your words...",
+      "filterByDifficulty": "Filter by difficulty",
+      "filterByTags": "Filter by tags",
+      "addWord": "Add Word",
+      "noWords": "No words added yet"
+    },
+    "difficulty": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    },
+    "form": {
+      "original": "Original Word",
+      "translation": "Translation",
+      "pronunciation": "Pronunciation",
+      "examples": "Examples",
+      "tags": "Tags",
+      "difficulty": "Difficulty"
+    }
+  },
+  "practice": {
+    "title": "Practice Session",
+    "description": "Test your knowledge and improve your vocabulary",
+    "translate_prompt": "Translate this word",
+    "check": "Check Answer",
+    "skip": "Skip Word",
+    "correct": "Correct!",
+    "incorrect": "Incorrect. Try again!",
+    "progress": "Progress",
+    "timeSpent": "Time Spent",
+    "sessionComplete": "Session Complete",
+    "startNewSession": "Start New Session",
+    "correctAnswer": "Correct answer",
+    "next": "Next"
+  },
+  "statistics": {
+    "title": "Statistics",
+    "description": "Track your learning progress and achievements",
+    "overall": {
+      "title": "Overall Progress",
+      "totalWords": "Total Words",
+      "learnedWords": "Learned Words",
+      "accuracy": "Accuracy",
+      "averageTime": "Average Time per Word"
+    },
+    "recent": {
+      "title": "Recent Activity",
+      "noActivity": "No recent activity"
+    },
+    "progress": {
+      "title": "Progress Chart",
+      "learned": "Words Learned",
+      "practiced": "Words Practiced"
+    },
+    "details": {
+      "title": "Detailed Statistics",
+      "date": "Date",
+      "word": "Word",
+      "result": "Result",
+      "timeSpent": "Time Spent"
+    }
+  },
+  "profile": {
+    "settings": {
+      "title": "Profile Settings",
+      "description": "Manage your account preferences and language settings",
+      "save": "Save Changes",
+      "error": "Failed to update profile",
+      "success": "Profile updated successfully"
+    },
+    "setup": {
+      "title": "Set Up Your Profile",
+      "subtitle": "Tell us about your language preferences",
+      "error": "Failed to create profile"
+    },
+    "name": "Name",
+    "nativeLanguage": "Native Language",
+    "targetLanguage": "Target Language"
   }
 }

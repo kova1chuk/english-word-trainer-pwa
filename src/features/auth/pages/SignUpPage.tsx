@@ -59,18 +59,10 @@ const SignUpPage = () => {
     <div className="flex-1 flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="w-full max-w-[440px] space-y-8 p-10 bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-2xl border border-gray-200 dark:border-gray-700">
         <div className="space-y-3">
-          <Typography
-            size="xl"
-            weight="bold"
-            align="center"
-            className="text-gray-900 dark:text-white text-[28px]"
-          >
+          <Typography variant="h2" align="center">
             {t("auth.signUp.title")}
           </Typography>
-          <Typography
-            align="center"
-            className="text-gray-600 dark:text-gray-300"
-          >
+          <Typography variant="body1" color="secondary" align="center">
             {t("auth.signUp.subtitle")}
           </Typography>
         </div>
@@ -141,10 +133,10 @@ const SignUpPage = () => {
           {error && (
             <div className="px-4">
               <Typography
+                variant="body2"
                 color="error"
-                size="sm"
                 align="center"
-                className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-2 rounded-lg shadow-lg"
+                className="rounded-lg bg-red-50 p-2 shadow-lg dark:bg-red-900/20"
               >
                 {error}
               </Typography>
@@ -154,22 +146,22 @@ const SignUpPage = () => {
           <Button
             type="submit"
             color="primary"
-            disabled={isLoading || !isValid || !isDirty}
+            className="w-full"
             loading={isLoading}
-            className="w-full py-3 text-lg rounded-xl font-medium"
+            disabled={isLoading || !isValid || !isDirty}
           >
-            {t("auth.signUp.button")}
+            {t("auth.signUp.submit")}
           </Button>
         </form>
 
-        <div className="text-center">
-          <Typography className="text-gray-600 dark:text-gray-300">
+        <div className="mt-4 text-center">
+          <Typography variant="body2" color="secondary">
             {t("auth.signUp.haveAccount")}{" "}
             <Link
-              to={routes.signin}
-              className="text-blue-600 dark:text-blue-400 hover:opacity-80 transition-opacity font-medium"
+              to={routes.signIn}
+              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
-              {t("auth.signUp.signInLink")}
+              {t("auth.signUp.signIn")}
             </Link>
           </Typography>
         </div>
