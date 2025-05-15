@@ -38,7 +38,7 @@ const SignInPage = () => {
     setError("");
 
     try {
-      await signin({ username: data.email, password: data.password }).unwrap();
+      await signin({ email: data.email, password: data.password }).unwrap();
       navigate(routes.home);
     } catch (error: unknown) {
       const errorMessage =

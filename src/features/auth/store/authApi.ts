@@ -14,7 +14,7 @@ const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
     signup: builder.mutation<AuthResponse, SignUpFormData>({
       query: ({ email, password }) => ({
-        url: "/api/auth/signup",
+        url: "/auth/signup",
         method: "POST",
         body: { email, password },
         headers: {
@@ -34,7 +34,7 @@ const authApi = api.injectEndpoints({
         formData.append("password", password);
 
         return {
-          url: "/api/auth/signin",
+          url: "/auth/signin",
           method: "POST",
           body: formData,
           // Don't set Content-Type, browser will set it with boundary for FormData
@@ -53,7 +53,7 @@ const authApi = api.injectEndpoints({
     }),
     getProfile: builder.query<UserProfile, void>({
       query: () => ({
-        url: "/api/auth/profile",
+        url: "/auth/profile",
         method: "GET",
       }),
       transformErrorResponse: (response): ApiError => response.data as ApiError,

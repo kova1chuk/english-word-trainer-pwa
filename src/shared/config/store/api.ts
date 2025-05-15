@@ -2,8 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 import type { RootState } from ".";
 
-// Backend URL should match one of the allowed CORS origins
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5173";
+const API_URL = "https://d1tezlh4qfat0a.cloudfront.net";
 
 export interface ApiError {
   message: string;

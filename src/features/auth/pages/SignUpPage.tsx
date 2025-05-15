@@ -40,7 +40,11 @@ const SignUpPage = () => {
     setError("");
 
     try {
-      await signup({ email: data.email, password: data.password }).unwrap();
+      await signup({
+        email: data.email,
+        password: data.password,
+        confirmPassword: "",
+      }).unwrap();
       navigate(routes.signin);
     } catch (error: unknown) {
       const errorMessage =
