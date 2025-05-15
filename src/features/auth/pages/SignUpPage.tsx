@@ -158,7 +158,7 @@ const SignUpPage = () => {
           <Typography variant="body2" color="secondary">
             {t("auth.signUp.haveAccount")}{" "}
             <Link
-              to={routes.signIn}
+              to={routes.signin}
               className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
               {t("auth.signUp.signIn")}
