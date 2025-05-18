@@ -2,12 +2,7 @@ import { api } from "@/shared/config/store/api";
 
 import { setToken } from "./slice";
 
-import type {
-  ApiError,
-  AuthResponse,
-  SignInResponse,
-  UserProfile,
-} from "../types";
+import type { ApiError, AuthResponse, SignInResponse } from "../types";
 import type { SignInFormData, SignUpFormData } from "../validation/auth.schema";
 
 const authApi = api.injectEndpoints({
@@ -51,17 +46,8 @@ const authApi = api.injectEndpoints({
       },
       invalidatesTags: ["Auth"],
     }),
-    getProfile: builder.query<UserProfile, void>({
-      query: () => ({
-        url: "/auth/profile",
-        method: "GET",
-      }),
-      transformErrorResponse: (response): ApiError => response.data as ApiError,
-      providesTags: ["Auth"],
-    }),
   }),
   overrideExisting: false,
 });
 
-export const { useSignupMutation, useSigninMutation, useGetProfileQuery } =
-  authApi;
+export const { useSignupMutation, useSigninMutation } = authApi;

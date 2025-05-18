@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-import type { RootState } from ".";
+import { env } from "../env";
 
-const API_URL = "https://d1tezlh4qfat0a.cloudfront.net";
+import type { RootState } from ".";
 
 export interface ApiError {
   message: string;
@@ -12,7 +12,7 @@ export interface ApiError {
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: API_URL,
+    baseUrl: env.api.url,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
 

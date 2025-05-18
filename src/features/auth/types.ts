@@ -16,8 +16,3 @@ export interface ApiErrorDetail {
 export interface ApiError {
   detail: ApiErrorDetail | string;
 }
-
-export interface UserProfile {
-  id: string;
-  email: string;
-}

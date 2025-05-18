@@ -21,7 +21,12 @@ export interface CreateProfileRequest {
   target_language: string;
 }
 
-export type UpdateProfileRequest = CreateProfileRequest;
+export interface UpdateProfileRequest {
+  name?: string;
+  native_language?: string;
+  target_language?: string;
+}
+
 export type ProfileResponse = Profile;
 
 export type { ApiError };
