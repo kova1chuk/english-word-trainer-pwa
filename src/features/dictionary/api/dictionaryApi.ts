@@ -1,17 +1,17 @@
-import { baseApi } from "@/shared/api/baseApi";
+import { api } from "@/shared/config/store/api";
 
 import type {
   DictionaryEntry,
   PaginatedResponse,
   PaginationParams,
-} from "@/shared/api/types";
+} from "../types";
 
 interface DictionarySearchParams extends PaginationParams {
   query?: string;
   partOfSpeech?: string;
 }
 
-export const dictionaryApi = baseApi.injectEndpoints({
+export const dictionaryApi = api.injectEndpoints({
   endpoints: (build) => ({
     searchDictionary: build.query<
       PaginatedResponse<DictionaryEntry>,

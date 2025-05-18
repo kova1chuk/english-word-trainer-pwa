@@ -1,4 +1,4 @@
-import { baseApi } from "@/shared/api/baseApi";
+import { api } from "@/shared/config/store/api";
 
 import type {
   PaginatedResponse,
@@ -6,7 +6,7 @@ import type {
   PracticeSession,
   Statistics,
   Word,
-} from "@/shared/api/types";
+} from "../types";
 
 interface WordsSearchParams extends PaginationParams {
   query?: string;
@@ -29,7 +29,7 @@ interface PracticeSessionData {
   timeSpent: number;
 }
 
-export const wordsApi = baseApi.injectEndpoints({
+export const wordsApi = api.injectEndpoints({
   endpoints: (build) => ({
     getUserWords: build.query<PaginatedResponse<Word>, WordsSearchParams>({
       query: (params) => ({
@@ -75,12 +75,12 @@ export const wordsApi = baseApi.injectEndpoints({
           method: "POST",
           body: data,
         }),
-        invalidatesTags: ["Practice", "Statistics"],
+        invalidatesTags: ["Words"],
       },
     ),
     getStatistics: build.query<Statistics, void>({
       query: () => "/statistics",
-      providesTags: ["Statistics"],
+      providesTags: ["Words"],
     }),
   }),
 });
