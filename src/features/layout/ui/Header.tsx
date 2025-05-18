@@ -70,9 +70,18 @@ const Header: React.FC = () => {
           <ThemeToggle />
           <LanguageSelector />
           {token ? (
-            <Button color="ghost" size="sm" onClick={handleSignOut}>
-              {t("header.sign_out")}
-            </Button>
+            <>
+              <Button
+                color={isActive(routes.profileSettings) ? "primary" : "ghost"}
+                size="sm"
+                onClick={() => navigate(routes.profileSettings)}
+              >
+                {t("header.profile")}
+              </Button>
+              <Button color="ghost" size="sm" onClick={handleSignOut}>
+                {t("header.sign_out")}
+              </Button>
+            </>
           ) : (
             <>
               <Button
