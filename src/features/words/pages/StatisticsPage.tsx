@@ -103,7 +103,7 @@ const StatisticsPage = () => {
                 <div
                   key={session.id}
                   className={`p-3 rounded ${
-                    session.correct
+                    session.isCorrect
                       ? "bg-green-100 dark:bg-green-900/20"
                       : "bg-red-100 dark:bg-red-900/20"
                   }`}
@@ -192,12 +192,12 @@ const StatisticsPage = () => {
                     <td className="py-3 px-4">
                       <span
                         className={`px-2 py-1 rounded ${
-                          session.correct
+                          session.isCorrect
                             ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300"
                             : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300"
                         }`}
                       >
-                        {session.correct
+                        {session.isCorrect
                           ? t("practice.correct")
                           : t("practice.incorrect")}
                       </span>

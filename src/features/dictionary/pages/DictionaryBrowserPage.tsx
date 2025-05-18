@@ -7,30 +7,46 @@ import Input from "@/shared/ui/Input";
 import Select from "@/shared/ui/Select";
 import Typography from "@/shared/ui/Typography";
 
-import { useSearchDictionaryQuery } from "../api/dictionaryApi";
+import { useGetDictionaryEntriesQuery } from "../api/dictionaryApi";
 
-const PARTS_OF_SPEECH = [
-  { value: "noun", label: "Noun" },
-  { value: "verb", label: "Verb" },
-  { value: "adjective", label: "Adjective" },
-  { value: "adverb", label: "Adverb" },
-  { value: "pronoun", label: "Pronoun" },
-  { value: "preposition", label: "Preposition" },
-  { value: "conjunction", label: "Conjunction" },
-  { value: "interjection", label: "Interjection" },
+import type { DifficultyLevel } from "../types";
+
+const DIFFICULTY_OPTIONS = [
+  { value: "easy", label: "Easy" },
+  { value: "medium", label: "Medium" },
+  { value: "hard", label: "Hard" },
+];
+
+const LANGUAGE_OPTIONS = [
+  { value: "en", label: "English" },
+  { value: "es", label: "Spanish" },
+  { value: "fr", label: "French" },
+  { value: "de", label: "German" },
+  { value: "it", label: "Italian" },
+  { value: "pt", label: "Portuguese" },
+  { value: "ru", label: "Russian" },
+  { value: "zh", label: "Chinese" },
+  { value: "ja", label: "Japanese" },
+  { value: "ko", label: "Korean" },
 ];
 
 const DictionaryBrowserPage = () => {
   const { t } = useTranslation();
-  const [query, setQuery] = useState("");
-  const [partOfSpeech, setPartOfSpeech] = useState("");
-  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [difficulty, setDifficulty] = useState<DifficultyLevel | "">("");
+  const [language, setLanguage] = useState("");
+  const [skip, setSkip] = useState(0);
   const limit = 10;
 
-  const { data, isLoading, error } = useSearchDictionaryQuery({
-    query,
-    partOfSpeech,
-    page,
+  const {
+    data: entries = [],
+    isLoading,
+    error,
+  } = useGetDictionaryEntriesQuery({
+    search,
+    difficulty: difficulty || undefined,
+    language: language || undefined,
+    skip,
     limit,
   });
 
@@ -49,19 +65,28 @@ const DictionaryBrowserPage = () => {
       </div>
 
       <div className="mb-8 space-y-4">
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4">
           <Input
             type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder={t("dictionary.browser.searchPlaceholder")}
             className="flex-1"
           />
           <Select
-            value={partOfSpeech}
-            onChange={(e) => setPartOfSpeech(e.target.value)}
-            options={PARTS_OF_SPEECH}
-            placeholder={t("dictionary.browser.filterByPartOfSpeech")}
+            value={difficulty}
+            onChange={(e) =>
+              setDifficulty(e.target.value as DifficultyLevel | "")
+            }
+            options={DIFFICULTY_OPTIONS}
+            placeholder={t("dictionary.browser.filterByDifficulty")}
+            className="w-48"
+          />
+          <Select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            options={LANGUAGE_OPTIONS}
+            placeholder={t("dictionary.browser.filterByLanguage")}
             className="w-48"
           />
         </div>
@@ -79,57 +104,80 @@ const DictionaryBrowserPage = () => {
         </div>
       )}
 
-      {data?.items.length === 0 && (
+      {entries.length === 0 && (
         <div className="text-center py-8">
           <Typography>{t("dictionary.browser.noResults")}</Typography>
         </div>
       )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {data?.items.map((entry) => (
+        {entries.map((entry) => (
           <Link
             key={entry.id}
             to={`/dictionary/${entry.id}`}
             className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
           >
             <Typography variant="h3" className="mb-2">
-              {entry.word}
+              {entry.text}
             </Typography>
-            <Typography
-              variant="body2"
-              className="text-gray-500 dark:text-gray-400 mb-2"
-            >
-              {entry.phonetic}
-            </Typography>
-            {entry.meanings[0] && (
+            {entry.pronunciation && (
               <Typography
                 variant="body2"
-                className="text-gray-600 dark:text-gray-300"
+                className="text-gray-500 dark:text-gray-400 mb-2"
               >
-                {entry.meanings[0].partOfSpeech}:{" "}
-                {entry.meanings[0].definitions[0].definition}
+                {entry.pronunciation}
               </Typography>
             )}
+            <Typography
+              variant="body1"
+              className="text-gray-600 dark:text-gray-300"
+            >
+              {entry.meaning}
+            </Typography>
+            {entry.example && (
+              <Typography
+                variant="body2"
+                className="mt-2 text-gray-500 dark:text-gray-400"
+              >
+                {entry.example}
+              </Typography>
+            )}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span
+                className={`px-2 py-1 rounded text-sm ${
+                  {
+                    easy: "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300",
+                    medium:
+                      "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300",
+                    hard: "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300",
+                  }[entry.difficulty]
+                }`}
+              >
+                {t(`dictionary.difficulty.${entry.difficulty}`)}
+              </span>
+              <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-sm">
+                {LANGUAGE_OPTIONS.find((l) => l.value === entry.language)
+                  ?.label || entry.language}
+              </span>
+            </div>
           </Link>
         ))}
       </div>
 
-      {data && data.totalPages > 1 && (
-        <div className="mt-8 flex justify-center gap-2">
-          <Button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-          >
-            Previous
-          </Button>
-          <Button
-            onClick={() => setPage((p) => Math.min(data.totalPages, p + 1))}
-            disabled={page === data.totalPages}
-          >
-            Next
-          </Button>
-        </div>
-      )}
+      <div className="mt-8 flex justify-center gap-2">
+        <Button
+          onClick={() => setSkip((s) => Math.max(0, s - limit))}
+          disabled={skip === 0}
+        >
+          {t("common.previous")}
+        </Button>
+        <Button
+          onClick={() => setSkip((s) => s + limit)}
+          disabled={entries.length < limit}
+        >
+          {t("common.next")}
+        </Button>
+      </div>
     </div>
   );
 };

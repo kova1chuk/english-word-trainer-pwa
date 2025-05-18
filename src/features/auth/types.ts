@@ -16,3 +16,23 @@ export interface ApiErrorDetail {
 export interface ApiError {
   detail: ApiErrorDetail | string;
 }
+
+export interface SignUpRequest {
+  email: string;
+  password: string;
+}
+
+export interface SignInRequest {
+  email: string;
+  password: string;
+}
+
+export interface Token {
+  access_token: string;
+  token_type: string;
+}
+
+export interface UserRead {
+  id: string;
+  email: string;
+}

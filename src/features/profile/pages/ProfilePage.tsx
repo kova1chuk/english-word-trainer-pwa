@@ -1,29 +1,71 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { routes } from "@/router/routes";
 import Button from "@/shared/ui/Button";
+import Input from "@/shared/ui/Input";
+import Select from "@/shared/ui/Select";
 import Typography from "@/shared/ui/Typography";
 
-import { useGetProfileQuery } from "../store/profileApi";
+import {
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+  useCreateProfileMutation,
+} from "../api/profileApi";
 
-const LANGUAGES = {
-  en: "English",
-  es: "Spanish",
-  fr: "French",
-  de: "German",
-  it: "Italian",
-  pt: "Portuguese",
-  ru: "Russian",
-  zh: "Chinese",
-  ja: "Japanese",
-  ko: "Korean",
-} as const;
+import type { ProfileCreate, ProfileUpdate } from "../types";
+
+const LANGUAGE_OPTIONS = [
+  { value: "en", label: "English" },
+  { value: "es", label: "Spanish" },
+  { value: "fr", label: "French" },
+  { value: "de", label: "German" },
+  { value: "it", label: "Italian" },
+  { value: "pt", label: "Portuguese" },
+  { value: "ru", label: "Russian" },
+  { value: "zh", label: "Chinese" },
+  { value: "ja", label: "Japanese" },
+  { value: "ko", label: "Korean" },
+];
 
 const ProfilePage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: profile, isLoading } = useGetProfileQuery();
+  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+  const [createProfile, { isLoading: isCreating }] = useCreateProfileMutation();
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState<ProfileCreate>({
+    name: profile?.name ?? "",
+    native_language: profile?.native_language ?? "",
+    target_language: profile?.target_language ?? "",
+  });
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      if (profile) {
+        await updateProfile(formData as ProfileUpdate).unwrap();
+      } else {
+        await createProfile(formData).unwrap();
+      }
+      setIsEditing(false);
+    } catch (err) {
+      setError(t("common.error"));
+      console.error("Failed to save profile:", err);
+    }
+  };
+
+  const handleChange = (field: keyof ProfileCreate, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   if (isLoading) {
     return (
@@ -67,80 +109,122 @@ const ProfilePage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
-        <div className="mb-8 flex justify-between items-center">
-          <div>
-            <Typography variant="h1" className="mb-4">
-              {t("profile.title")}
-            </Typography>
-            <Typography
-              variant="body1"
-              className="text-gray-600 dark:text-gray-300"
-            >
-              {t("profile.description")}
-            </Typography>
-          </div>
-          <Button
-            color="primary"
-            onClick={() => navigate(routes.profileSettings)}
+        <div className="mb-8">
+          <Typography variant="h1" className="mb-4">
+            {t("profile.title")}
+          </Typography>
+          <Typography
+            variant="body1"
+            className="text-gray-600 dark:text-gray-300"
           >
-            {t("profile.edit")}
-          </Button>
+            {t("profile.description")}
+          </Typography>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-          <div className="space-y-6">
-            {/* Name */}
-            <div>
-              <Typography
-                variant="subtitle2"
-                className="text-gray-500 dark:text-gray-400 mb-1"
-              >
-                {t("profile.name")}
-              </Typography>
-              <Typography variant="body1">{profile.name}</Typography>
-            </div>
+          {!isEditing ? (
+            <div className="space-y-6">
+              <div>
+                <Typography variant="subtitle2" className="text-gray-500 mb-1">
+                  {t("profile.name")}
+                </Typography>
+                <Typography variant="body1">
+                  {profile?.name || t("profile.notSet")}
+                </Typography>
+              </div>
 
-            {/* Native Language */}
-            <div>
-              <Typography
-                variant="subtitle2"
-                className="text-gray-500 dark:text-gray-400 mb-1"
-              >
-                {t("profile.nativeLanguage")}
-              </Typography>
-              <Typography variant="body1">
-                {LANGUAGES[profile.native_language as keyof typeof LANGUAGES] ||
-                  profile.native_language}
-              </Typography>
-            </div>
+              <div>
+                <Typography variant="subtitle2" className="text-gray-500 mb-1">
+                  {t("profile.nativeLanguage")}
+                </Typography>
+                <Typography variant="body1">
+                  {LANGUAGE_OPTIONS.find(
+                    (l) => l.value === profile?.native_language,
+                  )?.label || t("profile.notSet")}
+                </Typography>
+              </div>
 
-            {/* Target Language */}
-            <div>
-              <Typography
-                variant="subtitle2"
-                className="text-gray-500 dark:text-gray-400 mb-1"
-              >
-                {t("profile.targetLanguage")}
-              </Typography>
-              <Typography variant="body1">
-                {LANGUAGES[profile.target_language as keyof typeof LANGUAGES] ||
-                  profile.target_language}
-              </Typography>
-            </div>
+              <div>
+                <Typography variant="subtitle2" className="text-gray-500 mb-1">
+                  {t("profile.targetLanguage")}
+                </Typography>
+                <Typography variant="body1">
+                  {LANGUAGE_OPTIONS.find(
+                    (l) => l.value === profile?.target_language,
+                  )?.label || t("profile.notSet")}
+                </Typography>
+              </div>
 
-            {/* Created At */}
-            <div>
-              <Typography
-                variant="subtitle2"
-                className="text-gray-500 dark:text-gray-400 mb-1"
-              >
-                {t("profile.createdAt")}
-              </Typography>
-              <Typography variant="body1">
-                {new Date(profile.created_at).toLocaleDateString()}
-              </Typography>
+              <div className="pt-4">
+                <Button onClick={() => setIsEditing(true)}>
+                  {t("profile.edit")}
+                </Button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <Typography variant="subtitle2" className="mb-2">
+                  {t("profile.name")}
+                </Typography>
+                <Input
+                  value={formData.name || ""}
+                  onChange={(e) => handleChange("name", e.target.value)}
+                  placeholder={t("profile.namePlaceholder")}
+                />
+              </div>
+
+              <div>
+                <Typography variant="subtitle2" className="mb-2">
+                  {t("profile.nativeLanguage")}
+                </Typography>
+                <Select
+                  value={formData.native_language || ""}
+                  onChange={(e) =>
+                    handleChange("native_language", e.target.value)
+                  }
+                  options={LANGUAGE_OPTIONS}
+                  placeholder={t("profile.nativeLanguagePlaceholder")}
+                />
+              </div>
+
+              <div>
+                <Typography variant="subtitle2" className="mb-2">
+                  {t("profile.targetLanguage")}
+                </Typography>
+                <Select
+                  value={formData.target_language || ""}
+                  onChange={(e) =>
+                    handleChange("target_language", e.target.value)
+                  }
+                  options={LANGUAGE_OPTIONS}
+                  placeholder={t("profile.targetLanguagePlaceholder")}
+                />
+              </div>
+
+              {error && (
+                <Typography className="text-red-500">{error}</Typography>
+              )}
+
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  color="ghost"
+                  onClick={() => setIsEditing(false)}
+                  disabled={isUpdating || isCreating}
+                >
+                  {t("common.cancel")}
+                </Button>
+                <Button
+                  type="submit"
+                  loading={isUpdating || isCreating}
+                  disabled={isUpdating || isCreating}
+                >
+                  {t("common.save")}
+                </Button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </div>

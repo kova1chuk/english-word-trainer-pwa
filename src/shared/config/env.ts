@@ -8,7 +8,8 @@ export const env = {
    * API Configuration
    */
   api: {
-    url: import.meta.env.API_URL || "https://d1tezlh4qfat0a.cloudfront.net",
+    url:
+      import.meta.env.VITE_API_URL || "https://d1tezlh4qfat0a.cloudfront.net",
   },
 
   /**

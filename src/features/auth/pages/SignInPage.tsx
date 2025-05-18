@@ -1,121 +1,97 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
-import { routes } from "@/router/routes";
 import Button from "@/shared/ui/Button";
-import FormField from "@/shared/ui/FormField";
 import Input from "@/shared/ui/Input";
 import Typography from "@/shared/ui/Typography";
 
-import { useSigninMutation } from "../store/authApi";
-import { signInSchema } from "../validation/auth.schema";
+import { useSignInMutation } from "../api/authApi";
+import { useAppDispatch } from "../store/hooks";
+import { setToken } from "../store/slice";
 
-import type { SignInFormData } from "../validation/auth.schema";
+import type { SignInRequest } from "../types";
 
 const SignInPage = () => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
-  const [signin, { isLoading }] = useSigninMutation();
-  const [error, setError] = useState("");
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid, isDirty },
-  } = useForm<SignInFormData>({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-    resolver: zodResolver(signInSchema),
-    mode: "onChange",
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [signIn, { isLoading }] = useSignInMutation();
+  const [formData, setFormData] = useState<SignInRequest>({
+    email: "",
+    password: "",
   });
+  const [error, setError] = useState<string | null>(null);
 
-  const onSubmit = async (data: SignInFormData) => {
-    setError("");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
 
     try {
-      await signin({ email: data.email, password: data.password }).unwrap();
-      navigate(routes.home);
-    } catch (error: unknown) {
-      const errorMessage =
-        error && typeof error === "object" && "data" in error
-          ? (error.data as { message?: string })?.message
-          : t("auth.signIn.error");
-      setError(errorMessage || t("auth.signIn.error"));
+      const response = await signIn(formData).unwrap();
+      dispatch(setToken(response));
+      navigate("/");
+    } catch (err) {
+      setError(t("auth.signIn.error"));
+      console.error("Failed to sign in:", err);
     }
   };
 
+  const handleChange = (field: keyof SignInRequest, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   return (
-    <div className="flex min-h-screen flex-1 items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
-      <div className="w-full max-w-[440px] space-y-8 rounded-2xl border border-gray-200 bg-white p-10 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:shadow-2xl">
-        <div className="space-y-3">
-          <Typography variant="h2" align="center">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <Typography variant="h1" className="text-center mb-4">
             {t("auth.signIn.title")}
           </Typography>
-          <Typography variant="body1" color="secondary" align="center">
-            {t("auth.signIn.subtitle")}
+          <Typography
+            variant="body1"
+            className="text-center text-gray-600 dark:text-gray-300"
+          >
+            {t("auth.signIn.description")}
           </Typography>
         </div>
 
-        <form
-          className="space-y-6"
-          onSubmit={handleSubmit(onSubmit)}
-          noValidate
-        >
-          <div className="space-y-5">
-            <FormField
-              label={t("auth.signIn.emailLabel")}
-              labelClassName="text-gray-700 dark:text-gray-300 font-medium"
-              error={
-                errors.email?.message ? t(errors.email.message) : undefined
-              }
-              required
-            >
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <div>
+              <Typography variant="subtitle2" className="mb-2">
+                {t("auth.signIn.email")}
+              </Typography>
               <Input
-                {...register("email")}
-                id="email"
                 type="email"
-                disabled={isLoading}
+                value={formData.email}
+                onChange={(e) => handleChange("email", e.target.value)}
                 placeholder={t("auth.signIn.emailPlaceholder")}
-                className="border-gray-300 bg-gray-50 text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:focus:ring-blue-400"
+                required
               />
-            </FormField>
-            <FormField
-              label={t("auth.signIn.passwordLabel")}
-              labelClassName="text-gray-700 dark:text-gray-300 font-medium"
-              error={
-                errors.password?.message
-                  ? t(errors.password.message)
-                  : undefined
-              }
-              required
-            >
+            </div>
+
+            <div>
+              <Typography variant="subtitle2" className="mb-2">
+                {t("auth.signIn.password")}
+              </Typography>
               <Input
-                {...register("password")}
-                id="password"
                 type="password"
-                disabled={isLoading}
+                value={formData.password}
+                onChange={(e) => handleChange("password", e.target.value)}
                 placeholder={t("auth.signIn.passwordPlaceholder")}
-                className="border-gray-300 bg-gray-50 text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:focus:ring-blue-400"
+                required
               />
-            </FormField>
+            </div>
           </div>
 
           {error && (
-            <div className="px-4">
-              <Typography
-                variant="body2"
-                color="error"
-                align="center"
-                className="rounded-lg bg-red-50 p-2 shadow-lg dark:bg-red-900/20"
-              >
-                {error}
-              </Typography>
-            </div>
+            <Typography className="text-red-500 text-center">
+              {error}
+            </Typography>
           )}
 
           <Button
@@ -123,23 +99,26 @@ const SignInPage = () => {
             color="primary"
             className="w-full"
             loading={isLoading}
-            disabled={isLoading || !isValid || !isDirty}
+            disabled={isLoading}
           >
             {t("auth.signIn.submit")}
           </Button>
-        </form>
 
-        <div className="text-center">
-          <Typography variant="body2" color="secondary">
-            {t("auth.signIn.noAccount")}{" "}
-            <Link
-              to={routes.signup}
-              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+          <div className="text-center">
+            <Typography
+              variant="body2"
+              className="text-gray-600 dark:text-gray-300"
             >
-              {t("auth.signIn.createAccount")}
-            </Link>
-          </Typography>
-        </div>
+              {t("auth.signIn.noAccount")}{" "}
+              <Link
+                to="/auth/signup"
+                className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+              >
+                {t("auth.signIn.signUp")}
+              </Link>
+            </Typography>
+          </div>
+        </form>
       </div>
     </div>
   );

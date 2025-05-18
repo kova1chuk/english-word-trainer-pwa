@@ -8,7 +8,10 @@ import Typography from "@/shared/ui/Typography";
 
 import { useGetUserWordsQuery, useDeleteWordMutation } from "../api/wordsApi";
 
+import type { DifficultyLevel } from "@/features/dictionary/types";
+
 const DIFFICULTY_OPTIONS = [
+  { value: "", label: "All" },
   { value: "easy", label: "Easy" },
   { value: "medium", label: "Medium" },
   { value: "hard", label: "Hard" },
@@ -16,21 +19,25 @@ const DIFFICULTY_OPTIONS = [
 
 const WordsListPage = () => {
   const { t } = useTranslation();
-  const [query, setQuery] = useState("");
-  const [difficulty, setDifficulty] = useState("");
-  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [difficulty, setDifficulty] = useState<DifficultyLevel | "">("");
+  const [skip, setSkip] = useState(0);
   const limit = 10;
 
-  const { data, isLoading, error } = useGetUserWordsQuery({
-    query,
-    difficulty: difficulty as "easy" | "medium" | "hard" | undefined,
-    page,
+  const {
+    data: words,
+    isLoading,
+    error,
+  } = useGetUserWordsQuery({
+    search: search || undefined,
+    difficulty: difficulty || undefined,
+    skip,
     limit,
   });
 
   const [deleteWord, { isLoading: isDeleting }] = useDeleteWordMutation();
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     await deleteWord(id).unwrap();
   };
 
@@ -52,14 +59,16 @@ const WordsListPage = () => {
         <div className="flex gap-4">
           <Input
             type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder={t("words.list.searchPlaceholder")}
             className="flex-1"
           />
           <Select
             value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value)}
+            onChange={(e) =>
+              setDifficulty(e.target.value as DifficultyLevel | "")
+            }
             options={DIFFICULTY_OPTIONS}
             placeholder={t("words.list.filterByDifficulty")}
             className="w-48"
@@ -79,14 +88,14 @@ const WordsListPage = () => {
         </div>
       )}
 
-      {data?.items.length === 0 && (
+      {words?.length === 0 && (
         <div className="text-center py-8">
           <Typography>{t("words.list.noWords")}</Typography>
         </div>
       )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {data?.items.map((word) => (
+        {words?.map((word) => (
           <div
             key={word.id}
             className="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
@@ -94,13 +103,13 @@ const WordsListPage = () => {
             <div className="flex justify-between items-start mb-4">
               <div>
                 <Typography variant="h3" className="mb-2">
-                  {word.original}
+                  {word.dictionary_entry.text}
                 </Typography>
                 <Typography
                   variant="body1"
                   className="text-gray-600 dark:text-gray-300"
                 >
-                  {word.translation}
+                  {word.dictionary_entry.meaning}
                 </Typography>
               </div>
               <Button
@@ -112,57 +121,62 @@ const WordsListPage = () => {
               </Button>
             </div>
 
-            {word.pronunciation && (
+            {word.dictionary_entry.pronunciation && (
               <Typography
                 variant="body2"
                 className="text-gray-500 dark:text-gray-400 mb-2"
               >
-                {word.pronunciation}
+                {word.dictionary_entry.pronunciation}
               </Typography>
             )}
 
-            <div className="space-y-2">
-              {word.examples.map((example, index) => (
+            {word.dictionary_entry.example && (
+              <Typography
+                variant="body2"
+                className="text-gray-600 dark:text-gray-300"
+              >
+                • {word.dictionary_entry.example}
+              </Typography>
+            )}
+
+            {word.personal_note && (
+              <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded">
                 <Typography
-                  key={index}
-                  variant="body2"
-                  className="text-gray-600 dark:text-gray-300"
+                  variant="subtitle2"
+                  className="text-gray-500 dark:text-gray-400 mb-1"
                 >
-                  • {example}
+                  {t("words.list.personalNote")}
                 </Typography>
-              ))}
-            </div>
+                <Typography variant="body2">{word.personal_note}</Typography>
+              </div>
+            )}
 
             <div className="mt-4 flex flex-wrap gap-2">
-              {word.tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-sm"
-                >
-                  {tag}
-                </span>
-              ))}
+              <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-sm">
+                {word.dictionary_entry.difficulty}
+              </span>
+              <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-sm">
+                {word.dictionary_entry.language}
+              </span>
             </div>
           </div>
         ))}
       </div>
 
-      {data && data.totalPages > 1 && (
-        <div className="mt-8 flex justify-center gap-2">
-          <Button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-          >
-            Previous
-          </Button>
-          <Button
-            onClick={() => setPage((p) => Math.min(data.totalPages, p + 1))}
-            disabled={page === data.totalPages}
-          >
-            Next
-          </Button>
-        </div>
-      )}
+      <div className="mt-8 flex justify-center gap-2">
+        <Button
+          onClick={() => setSkip((s) => Math.max(0, s - limit))}
+          disabled={skip === 0}
+        >
+          Previous
+        </Button>
+        <Button
+          onClick={() => setSkip((s) => s + limit)}
+          disabled={!words || words.length < limit}
+        >
+          Next
+        </Button>
+      </div>
     </div>
   );
 };

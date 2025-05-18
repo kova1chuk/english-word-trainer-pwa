@@ -5,7 +5,9 @@ import { useAppSelector } from "@/shared/config/store/hooks";
 const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const currentTheme = useAppSelector((state) => state.theme.currentTheme);
+  const currentTheme = useAppSelector(
+    (state) => state.theme?.currentTheme ?? "light",
+  );
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", currentTheme === "dark");

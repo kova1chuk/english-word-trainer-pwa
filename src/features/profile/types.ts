@@ -30,3 +30,25 @@ export interface UpdateProfileRequest {
 export type ProfileResponse = Profile;
 
 export type { ApiError };
+
+export interface ProfileCreate {
+  name?: string;
+  native_language?: string;
+  target_language?: string;
+}
+
+export interface ProfileUpdate {
+  name?: string;
+  native_language?: string;
+  target_language?: string;
+}
+
+export interface ProfileRead {
+  id: string;
+  user_id: string;
+  name?: string;
+  native_language?: string;
+  target_language?: string;
+  created_at: string;
+  updated_at: string;
+}

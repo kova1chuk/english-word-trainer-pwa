@@ -1,35 +1,69 @@
 import { api } from "@/shared/config/store/api";
 
 import type {
-  DictionaryEntry,
-  PaginatedResponse,
-  PaginationParams,
+  DictionaryCreate,
+  DictionaryRead,
+  DictionaryQueryParams,
 } from "../types";
 
-interface DictionarySearchParams extends PaginationParams {
-  query?: string;
-  partOfSpeech?: string;
-}
-
 export const dictionaryApi = api.injectEndpoints({
-  endpoints: (build) => ({
-    searchDictionary: build.query<
-      PaginatedResponse<DictionaryEntry>,
-      DictionarySearchParams
+  endpoints: (builder) => ({
+    getDictionaryEntries: builder.query<
+      DictionaryRead[],
+      DictionaryQueryParams
     >({
       query: (params) => ({
-        url: "/dictionary/search",
+        url: "/dictionary",
         method: "GET",
         params,
       }),
       providesTags: ["Dictionary"],
     }),
-    getDictionaryEntry: build.query<DictionaryEntry, string>({
-      query: (id) => `/dictionary/entries/${id}`,
-      providesTags: (_result, _error, id) => [{ type: "Dictionary", id }],
+
+    getDictionaryEntry: builder.query<DictionaryRead, number>({
+      query: (id) => ({
+        url: `/dictionary/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["Dictionary"],
+    }),
+
+    createDictionaryEntry: builder.mutation<DictionaryRead, DictionaryCreate>({
+      query: (data) => ({
+        url: "/dictionary",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Dictionary"],
+    }),
+
+    updateDictionaryEntry: builder.mutation<
+      DictionaryRead,
+      { id: number; data: DictionaryCreate }
+    >({
+      query: ({ id, data }) => ({
+        url: `/dictionary/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Dictionary"],
+    }),
+
+    deleteDictionaryEntry: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/dictionary/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Dictionary"],
     }),
   }),
+  overrideExisting: false,
 });
 
-export const { useSearchDictionaryQuery, useGetDictionaryEntryQuery } =
-  dictionaryApi;
+export const {
+  useGetDictionaryEntriesQuery,
+  useGetDictionaryEntryQuery,
+  useCreateDictionaryEntryMutation,
+  useUpdateDictionaryEntryMutation,
+  useDeleteDictionaryEntryMutation,
+} = dictionaryApi;

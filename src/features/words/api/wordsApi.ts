@@ -1,95 +1,106 @@
 import { api } from "@/shared/config/store/api";
 
 import type {
-  PaginatedResponse,
-  PaginationParams,
-  PracticeSession,
+  ApiError,
   Statistics,
-  Word,
+  WordCreate,
+  WordRead,
+  WordUpdate,
+  WordStats,
+  WordQueryParams,
 } from "../types";
 
-interface WordsSearchParams extends PaginationParams {
-  query?: string;
-  difficulty?: "easy" | "medium" | "hard";
-  tags?: string[];
-}
-
-interface AddWordData {
-  original: string;
-  translation: string;
-  pronunciation?: string;
-  examples: string[];
-  difficulty: "easy" | "medium" | "hard";
-  tags: string[];
-}
-
-interface PracticeSessionData {
-  wordId: string;
-  answer: string;
-  timeSpent: number;
-}
-
 export const wordsApi = api.injectEndpoints({
-  endpoints: (build) => ({
-    getUserWords: build.query<PaginatedResponse<Word>, WordsSearchParams>({
+  endpoints: (builder) => ({
+    getUserWords: builder.query<WordRead[], WordQueryParams>({
       query: (params) => ({
         url: "/words",
         method: "GET",
         params,
       }),
+      transformErrorResponse: (response): ApiError => response.data as ApiError,
       providesTags: ["Words"],
     }),
-    addWord: build.mutation<Word, AddWordData>({
+
+    getWord: builder.query<WordRead, number>({
+      query: (id) => ({
+        url: `/words/${id}`,
+        method: "GET",
+      }),
+      transformErrorResponse: (response): ApiError => response.data as ApiError,
+      providesTags: ["Words"],
+    }),
+
+    createWord: builder.mutation<WordRead, WordCreate>({
       query: (data) => ({
         url: "/words",
         method: "POST",
         body: data,
       }),
+      transformErrorResponse: (response): ApiError => response.data as ApiError,
       invalidatesTags: ["Words"],
     }),
-    updateWord: build.mutation<
-      Word,
-      { id: string; data: Partial<AddWordData> }
-    >({
+
+    updateWord: builder.mutation<WordRead, { id: number; data: WordUpdate }>({
       query: ({ id, data }) => ({
         url: `/words/${id}`,
-        method: "PATCH",
+        method: "PUT",
         body: data,
       }),
-      invalidatesTags: (_result, _error, { id }) => [
-        "Words",
-        { type: "Words", id },
-      ],
+      transformErrorResponse: (response): ApiError => response.data as ApiError,
+      invalidatesTags: ["Words"],
     }),
-    deleteWord: build.mutation<void, string>({
+
+    deleteWord: builder.mutation<void, number>({
       query: (id) => ({
         url: `/words/${id}`,
         method: "DELETE",
       }),
+      transformErrorResponse: (response): ApiError => response.data as ApiError,
       invalidatesTags: ["Words"],
     }),
-    submitPracticeSession: build.mutation<PracticeSession, PracticeSessionData>(
-      {
-        query: (data) => ({
-          url: "/practice/sessions",
-          method: "POST",
-          body: data,
-        }),
-        invalidatesTags: ["Words"],
-      },
-    ),
-    getStatistics: build.query<Statistics, void>({
-      query: () => "/statistics",
+
+    getWordStats: builder.query<WordStats, number>({
+      query: (id) => ({
+        url: `/words/${id}/stats`,
+        method: "GET",
+      }),
+      transformErrorResponse: (response): ApiError => response.data as ApiError,
       providesTags: ["Words"],
     }),
+
+    getStatistics: builder.query<Statistics, void>({
+      query: () => ({
+        url: "/words/statistics",
+        method: "GET",
+      }),
+      transformErrorResponse: (response): ApiError => response.data as ApiError,
+      providesTags: ["Words"],
+    }),
+
+    submitPracticeSession: builder.mutation<
+      void,
+      { id: number; correct: boolean }
+    >({
+      query: ({ id, correct }) => ({
+        url: `/words/${id}/practice`,
+        method: "POST",
+        params: { correct },
+      }),
+      transformErrorResponse: (response): ApiError => response.data as ApiError,
+      invalidatesTags: ["Words"],
+    }),
   }),
+  overrideExisting: false,
 });
 
 export const {
   useGetUserWordsQuery,
-  useAddWordMutation,
+  useGetWordQuery,
+  useCreateWordMutation,
   useUpdateWordMutation,
   useDeleteWordMutation,
-  useSubmitPracticeSessionMutation,
+  useGetWordStatsQuery,
   useGetStatisticsQuery,
+  useSubmitPracticeSessionMutation,
 } = wordsApi;
