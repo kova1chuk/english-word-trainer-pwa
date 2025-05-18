@@ -196,10 +196,18 @@
     "setup": {
       "title": "Set Up Your Profile",
       "subtitle": "Tell us about your language preferences",
-      "error": "Failed to create profile"
+      "error": "Failed to create profile",
+      "create": "Create Profile",
+      "submit": "Create Profile"
     },
     "name": "Name",
     "nativeLanguage": "Native Language",
-    "targetLanguage": "Target Language"
+    "targetLanguage": "Target Language",
+    "createdAt": "Created At",
+    "notCreated": {
+      "title": "Profile Not Set Up",
+      "description": "You haven't set up your profile yet. Please create your profile to start using the app.",
+      "setupButton": "Set Up Profile"
+    }
   }
 }

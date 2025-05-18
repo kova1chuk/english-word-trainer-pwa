@@ -2,7 +2,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
+import { routes } from "@/router/routes";
 import Button from "@/shared/ui/Button";
 import FormField from "@/shared/ui/FormField";
 import Input from "@/shared/ui/Input";
@@ -12,6 +14,7 @@ import Typography from "@/shared/ui/Typography";
 import {
   useGetProfileQuery,
   useUpdateProfileMutation,
+  useCreateProfileMutation,
 } from "../store/profileApi";
 import { profileSchema } from "../validation/profile.schema";
 
@@ -32,9 +35,11 @@ const LANGUAGES = [
 
 const ProfileSettingsPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [error, setError] = useState("");
   const { data: profile, isLoading: isLoadingProfile } = useGetProfileQuery();
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+  const [createProfile, { isLoading: isCreating }] = useCreateProfileMutation();
 
   const {
     register,
@@ -47,11 +52,11 @@ const ProfileSettingsPage = () => {
   });
 
   useEffect(() => {
-    if (profile?.native_language?.code && profile?.target_language?.code) {
+    if (profile) {
       reset({
         name: profile.name,
-        native_language: profile.native_language.code,
-        target_language: profile.target_language.code,
+        native_language: profile.native_language,
+        target_language: profile.target_language,
       });
     }
   }, [profile, reset]);
@@ -59,7 +64,12 @@ const ProfileSettingsPage = () => {
   const onSubmit = async (data: ProfileFormData) => {
     setError("");
     try {
-      await updateProfile(data).unwrap();
+      if (profile) {
+        await updateProfile(data).unwrap();
+      } else {
+        await createProfile(data).unwrap();
+      }
+      navigate(routes.profile);
     } catch (error: unknown) {
       const errorMessage =
         error && typeof error === "object" && "data" in error
@@ -90,13 +100,15 @@ const ProfileSettingsPage = () => {
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <Typography variant="h1" className="mb-4">
-            {t("profile.settings.title")}
+            {profile ? t("profile.settings.title") : t("profile.setup.title")}
           </Typography>
           <Typography
             variant="body1"
             className="text-gray-600 dark:text-gray-300"
           >
-            {t("profile.settings.description")}
+            {profile
+              ? t("profile.settings.description")
+              : t("profile.setup.description")}
           </Typography>
         </div>
 
@@ -145,13 +157,22 @@ const ProfileSettingsPage = () => {
               />
             </FormField>
 
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-4">
+              <Button
+                type="button"
+                color="ghost"
+                onClick={() => navigate(routes.profile)}
+              >
+                {t("common.cancel")}
+              </Button>
               <Button
                 type="submit"
-                disabled={!isDirty || isUpdating}
-                loading={isUpdating}
+                disabled={!isDirty || isUpdating || isCreating}
+                loading={isUpdating || isCreating}
               >
-                {t("profile.settings.save")}
+                {profile
+                  ? t("profile.settings.save")
+                  : t("profile.setup.create")}
               </Button>
             </div>
           </form>

@@ -33,10 +33,33 @@ const ProfilePage = () => {
     );
   }
 
-  if (!profile) {
+  // Check if profile exists and has created_at field
+  if (!profile || !profile.created_at) {
     return (
-      <div className="flex justify-center items-center min-h-[50vh]">
-        <Typography className="text-red-500">{t("common.error")}</Typography>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+            <Typography variant="h1" className="mb-4">
+              {t("profile.notCreated.title")}
+            </Typography>
+            <Typography
+              variant="body1"
+              className="text-gray-600 dark:text-gray-400"
+            >
+              {t("profile.notCreated.description")}
+            </Typography>
+          </div>
+          <div className="mt-8 flex justify-center">
+            <Button
+              color="primary"
+              size="lg"
+              className="w-full max-w-xs"
+              onClick={() => navigate(routes.profileSetup)}
+            >
+              {t("profile.notCreated.setupButton")}
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -105,13 +128,13 @@ const ProfilePage = () => {
               </Typography>
             </div>
 
-            {/* Member Since */}
+            {/* Created At */}
             <div>
               <Typography
                 variant="subtitle2"
                 className="text-gray-500 dark:text-gray-400 mb-1"
               >
-                {t("profile.memberSince")}
+                {t("profile.createdAt")}
               </Typography>
               <Typography variant="body1">
                 {new Date(profile.created_at).toLocaleDateString()}
