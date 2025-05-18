@@ -7,10 +7,10 @@ export interface Language {
 
 export interface Profile {
   id: string;
-  email: string;
+  user_id: string;
   name: string;
-  native_language: Language;
-  target_language: Language;
+  native_language: string;
+  target_language: string;
   created_at: string;
   updated_at: string;
 }

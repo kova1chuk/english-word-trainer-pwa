@@ -182,6 +182,10 @@
     }
   },
   "profile": {
+    "title": "Profile",
+    "description": "View your profile information",
+    "edit": "Edit Profile",
+    "memberSince": "Member Since",
     "settings": {
       "title": "Profile Settings",
       "description": "Manage your account preferences and language settings",

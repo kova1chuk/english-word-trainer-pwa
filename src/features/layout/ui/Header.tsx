@@ -72,9 +72,9 @@ const Header: React.FC = () => {
           {token ? (
             <>
               <Button
-                color={isActive(routes.profileSettings) ? "primary" : "ghost"}
+                color={isActive(routes.profile) ? "primary" : "ghost"}
                 size="sm"
-                onClick={() => navigate(routes.profileSettings)}
+                onClick={() => navigate(routes.profile)}
               >
                 {t("header.profile")}
               </Button>

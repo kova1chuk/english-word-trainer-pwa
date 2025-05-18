@@ -6,7 +6,11 @@ import {
   DictionaryEntryPage,
 } from "@/features/dictionary/pages";
 import MainLayout from "@/features/layout/MainLayout";
-import { ProfileSettingsPage, ProfileSetupPage } from "@/features/profile";
+import {
+  ProfilePage,
+  ProfileSettingsPage,
+  ProfileSetupPage,
+} from "@/features/profile";
 import { PracticePage, StatisticsPage, WordsListPage } from "@/features/words";
 import { NotFoundPage } from "@/pages/NotFound";
 
@@ -24,6 +28,7 @@ export const AppRouter = () => {
         {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
           <Route path={routes.home} element={<WordsListPage />} />
+          <Route path={routes.profile} element={<ProfilePage />} />
           <Route path={routes.profileSetup} element={<ProfileSetupPage />} />
           <Route
             path={routes.profileSettings}

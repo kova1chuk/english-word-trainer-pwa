@@ -12,6 +12,7 @@ export const routes = {
   statistics: "/statistics",
 
   // Profile routes
+  profile: "/profile",
   profileSetup: "/profile/setup",
   profileSettings: "/profile/settings",
 
