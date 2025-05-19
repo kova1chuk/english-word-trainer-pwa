@@ -12,6 +12,7 @@ import {
 import storage from "redux-persist/lib/storage";
 
 import authReducer from "@/features/auth/store/slice";
+import wordsReducer from "@/features/words/wordsSlice";
 import themeReducer from "@/shared/theme/model/themeStore";
 
 import { api } from "./api";
@@ -28,19 +29,22 @@ const themePersistConfig = {
   whitelist: ["currentTheme"],
 };
 
+const wordsPersistConfig = {
+  key: "words",
+  storage,
+  whitelist: ["items"], // Only persist the words items
+};
+
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
 const persistedThemeReducer = persistReducer(themePersistConfig, themeReducer);
+const persistedWordsReducer = persistReducer(wordsPersistConfig, wordsReducer);
 
 const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
     theme: persistedThemeReducer,
+    words: persistedWordsReducer,
     [api.reducerPath]: api.reducer,
-  },
-  preloadedState: {
-    theme: {
-      currentTheme: localStorage.getItem("theme") || "light",
-    },
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
